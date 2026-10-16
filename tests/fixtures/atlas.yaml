@@ -1,0 +1,37 @@
+# Test fixture: a frozen copy of the project list from the group atlas (house/atlas.yaml).
+# The live file lives in the non-git group folder and is not in this repository.
+# Tests read this file so a fresh clone passes. Add a slug here when the catalog gains one.
+version: 1
+kind: code-group
+name: house
+projects:
+  design-system:
+    path: design-system
+  local-models:
+    path: local-models
+  local-tts:
+    path: local-tts
+  memory-screenctx:
+    path: memory-screenctx
+  memory-recall:
+    path: memory-recall
+  ledger:
+    path: ledger
+  memory-menubar:
+    path: memory-menubar
+  quick-launch:
+    path: quick-launch
+  rti:
+    path: rti
+  local-dictation:
+    path: local-dictation
+  cotype:
+    path: cotype
+  usage-menubar:
+    path: usage-menubar
+  chief-of-staff:
+    path: chief-of-staff
+  rig:
+    path: rig
+  house-system:
+    path: house-system
