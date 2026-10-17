@@ -42,15 +42,15 @@ surfaces:
     repo: quick-launch
     status: current
     visibility: private
-    description: "Keyboard-first launcher and instant AI overlay; owns the HouseChatCore package shared with RTI, and is the one face of the Chief of Staff (the pinned AI Chat conversation)."
-    uses: [si-launcher-panel, si-quick-ai, si-ai-chat-window, si-composer, si-chat-context-record, si-proposal-card, org-local-models, org-memory-recall, org-housechatcore, org-chief-of-staff]
+    description: "Keyboard-first launcher and instant AI overlay; owns the HouseChatCore package shared with RTI."
+    uses: [si-launcher-panel, si-quick-ai, si-ai-chat-window, si-composer, si-chat-context-record, org-local-models, org-memory-recall, org-housechatcore]
   - id: sfc-rti
     name: RTI
     kind: macos-app
     repo: rti
     status: current
     visibility: private
-    description: "Meeting recorder and real-time copilot that archives sessions to the private knowledge vault; sole meeting path. Its chats, standalone ones included, are grounded in sessions and the vault; general chat is Quick Launch AI Chat."
+    description: "Meeting capture (recording, live transcript, screenshots, raw session archive to the private knowledge vault) and the in-meeting copilot; analysis and summaries happen downstream, not in the app. Its chats, standalone ones included, are grounded in sessions and the vault; general chat is Quick Launch AI Chat."
     uses: [si-composer, si-chat-context-record, si-session-browser, org-housechatcore, org-local-models]
   - id: sfc-local-dictation
     name: Local Dictation
@@ -101,14 +101,6 @@ surfaces:
     visibility: private
     description: "Capture-and-search CLI over the memory repository and open tasks; reached from Quick Launch saved actions and the Memory panel; no screen data."
     uses: [si-terminal-discipline, org-memory-recall]
-  - id: sfc-ledger-cli
-    name: ledger
-    kind: cli
-    repo: ledger
-    status: experimental
-    visibility: private
-    description: "Five-verb memory ledger and disposable index in shadow trial; vault files stay the truth, the index is replaceable."
-    uses: [si-terminal-discipline, src-project-status, src-task-store]
   - id: sfc-screenctx
     name: screenctx
     kind: cli
@@ -270,14 +262,6 @@ shared_interaction:
     visibility: private
     description: "Standalone permission panel that re-reads state about once a second so a grant lands without a relaunch."
     used_by: [sfc-local-dictation]
-  - id: si-proposal-card
-    name: Proposal card
-    kind: component
-    source: ../design-system/components.json
-    status: experimental
-    visibility: private
-    description: "One Chief of Staff proposal, answered with Do it, Edit, Later or No before anything acts; keyboard first in the pinned conversation."
-    used_by: [sfc-quick-launch]
   - id: si-terminal-discipline
     name: Terminal surface discipline
     kind: rule
@@ -285,7 +269,7 @@ shared_interaction:
     status: current
     visibility: private
     description: "The same rule without chrome: monochrome, uppercase section labels, two-column rows, one-line status, no boxes or emoji."
-    used_by: [sfc-recall-cli, sfc-ledger-cli, sfc-screenctx, sfc-pi-session]
+    used_by: [sfc-recall-cli, sfc-screenctx, sfc-pi-session]
 
 orchestration:
   - id: orch-pi-session
@@ -1191,14 +1175,14 @@ connectors:
     lane: local-cli
     status: current
     visibility: private
-    description: "Every Pi call reaches a hosted model: the agent session, rig seats, and the Chief of Staff maker and reviewer (DeepSeek Flash and V4 Pro, run as sessionless pi -p calls)."
+    description: "Every Pi call reaches a hosted model: the agent session and rig seats."
   - id: conn-telegram
     name: Telegram phone doorbell
     service: Telegram Bot API
     lane: http
     status: current
     visibility: private
-    description: "Send-only notices to the owner's phone through the Mac's notifier; two-way replies wait for the Chief of Staff's own bot, which will read only the configured chat."
+    description: "Send-only notices to the owner's phone through the Mac's notifier; two-way replies are not built."
   - id: conn-browser-bsk
     name: Interactive browser
     service: Logged-in Helium window
@@ -1271,13 +1255,6 @@ organs:
     status: current
     visibility: private
     description: "Capture-and-search CLI over the memory repository and open tasks: capture hands a thought to the memory repository's capture CLI (remember is a hidden alias), search scans its markdown. Reads no screen data."
-  - id: org-ledger
-    name: ledger
-    kind: store
-    repo: ledger
-    status: experimental
-    visibility: private
-    description: "Commitments ledger plus a disposable index over vault files; shadow trial."
   - id: org-housechatcore
     name: HouseChatCore
     kind: library
@@ -1285,13 +1262,6 @@ organs:
     status: current
     visibility: private
     description: "Chat core package owned by Quick Launch and consumed by RTI; the shared seam between the two apps."
-  - id: org-chief-of-staff
-    name: chief-of-staff (cos)
-    kind: service
-    repo: chief-of-staff
-    status: experimental
-    visibility: private
-    description: "The proactive loop: a trigger over new vault mail and Slack, Ledger changes and the calendar snapshot, a tool-less brain whose model calls are sessionless (the local-models /v1/ask is the heartbeat's fallback), one HouseChatCore thread of tiered cards, the vault's gated writers on Do it, and one live health card. Its only face is Quick Launch AI Chat; the ChiefOfStaff.app face was retired on 2026-09-26."
   - id: org-rig
     name: rig
     kind: service
@@ -1404,21 +1374,6 @@ sources:
     description: "This file. It describes; it does not authorise and it does not replace any record above."
 
 relationships:
-  - id: rel-cos-uses-chatcore
-    from: org-chief-of-staff
-    to: org-housechatcore
-    kind: uses
-    description: "The Chief of Staff thread is a HouseChatCore conversation record, so any House chat surface can read it."
-  - id: rel-quicklaunch-faces-cos
-    from: sfc-quick-launch
-    to: org-chief-of-staff
-    kind: faces
-    description: "Quick Launch AI Chat's pinned conversation shows the cos thread and acts only by calling cos; it never writes the thread or the charter itself."
-  - id: rel-cos-reads-ledger
-    from: org-chief-of-staff
-    to: org-ledger
-    kind: reads
-    description: "Ledger owns commitments and their proof-based closes; the Chief of Staff only turns Ledger changes into cards."
   - id: rel-rig-runs-pi-sessions
     from: org-rig
     to: sfc-pi-session
@@ -1430,12 +1385,6 @@ relationships:
     kind: supersedes
     status: aspirational
     description: "rig's dashboard lives outside every Pi session; the in-Pi /dash retires once rig covers what it does. Not done yet."
-  - id: rel-rig-needs-you-card
-    from: org-rig
-    to: org-chief-of-staff
-    kind: notifies
-    status: aspirational
-    description: "A seat that needs Tristan becomes one Chief of Staff card (one doorbell). Designed, not built."
   - id: rel-design-rule-governs-surfaces
     from: si-design-system
     to: sfc-quick-launch
@@ -1496,21 +1445,6 @@ relationships:
     to: conn-usage-apis
     kind: reads
     description: "Quota and balance only, never content."
-  - id: rel-cos-calls-pi-models
-    from: org-chief-of-staff
-    to: conn-pi-models
-    kind: sends
-    description: "One event, its project status and open tasks go to the maker; task closes and reply drafts go to the reviewer."
-  - id: rel-cos-rings-telegram
-    from: org-chief-of-staff
-    to: conn-telegram
-    kind: sends
-    description: "The phone doorbell for a new card; two-way replies wait for the Chief of Staff's own bot."
-  - id: rel-ledger-reads-status
-    from: sfc-ledger-cli
-    to: src-project-status
-    kind: indexes
-    description: "The ledger indexes project records without becoming their owner."
   - id: rel-pi-session-orchestrates
     from: sfc-pi-session
     to: orch-pi-session

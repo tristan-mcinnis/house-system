@@ -17,12 +17,9 @@ The apps today are Quick Launch (launcher and AI overlay), RTI (meeting recorder
 and copilot), Local Dictation (push-to-talk dictation), Cotype (menu-bar
 completion), Memory (memory capture and search), Usage (quota of hosted metered
 AI), and Local Models (which local models are warm; the daemon's face).
-Terminal surfaces are `recall`, `screenctx`, `ledger`, `rig` (agent seats and
-their dashboard) and `cos` (the Chief of Staff organ's own CLI). The agent session is a surface too, and it is the one
-that carries the execution fabric. Chief of Staff (experimental) is the one
-organ that starts work on its own: see Initiative below. Its only face is the
-pinned conversation in Quick Launch AI Chat. The separate ChiefOfStaff.app was
-retired on 2026-09-26; Git keeps its history.
+Terminal surfaces are `recall`, `screenctx` and `rig` (agent seats and their
+dashboard). The agent session is a surface too, and it is the one that carries
+the execution fabric.
 
 A surface owns its own permissions, onboarding, persistence and bundle identity.
 It does not own a shared capability and it does not own a rule.
@@ -88,50 +85,12 @@ organ on the machine.
   local model daemon, the voice service).
 - Organs are shared local capabilities with an owning repository: the design
   system, the local model service, the voice service, the screen-context
-  collector, the recall CLI, the ledger, and the shared chat core owned by Quick
+  collector, the recall CLI, and the shared chat core owned by Quick
   Launch and consumed by RTI.
 
 A capability has one owner. A second consumer references the organ; it does not
 fork it. When two apps genuinely need different behaviour, that is a signal the
 organ needs a seam, not a copy.
-
-### Initiative
-
-Every other flow in this document starts with a person: a hotkey, a meeting, a
-launcher request. Initiative is the layer that starts work without one, and it is
-owned by one organ, `chief-of-staff` (`cos`), so no app grows its own background
-agent.
-
-- **Trigger.** New records the ingest jobs already write (work mail, Slack) and
-  changes in Ledger (a sent mail that closes a commitment, a commitment due soon). No
-  model runs in the trigger.
-- **Brain.** A model with no tools reads one event plus its project's status and
-  open tasks, and proposes the smallest next step, or stays quiet.
-- **Thread.** One HouseChatCore conversation holds every card and chat turn, so any
-  House chat surface can show it.
-- **Tiers.** Cards are ranked, not listed: decide, today, waiting, later, FYI and
-  system. Only decide interrupts. Long projects are a strip, not cards.
-- **Hands.** On Do it, only the vault's gated writers run (status note, task,
-  task close, Outlook draft). Nothing is sent. Later hides a card until a time;
-  No records a no.
-- **Charter.** A plain-words policy in the vault (what to watch, who matters, what
-  to ignore, style, quiet hours). Every model call reads it. More or Less on a
-  card appends a learned rule, so a correction becomes a rule, not a repeat.
-- **Clock.** A heartbeat adds a weekday morning card and a card 10 to 20 minutes
-  before each meeting with someone. The morning card is built from 05:00 once
-  morning-prep's block exists (its one ring waits for 07:00), else at or after
-  07:45, and not after 11:00. It may say nothing.
-- **Reviewer.** A second, stronger model checks every task close and reply draft;
-  it passes, blocks, or raises the card to Decide. A reviewer failure never passes.
-- **Trust.** Nothing acts before a tap, until Tristan says "Always do this" for one
-  action type on one project. Replies and Decide cards never run by themselves;
-  every run records Undo steps. The verdict log is the acceptance ledger.
-- **Phone.** A send-only doorbell today; two-way replies need the Chief of
-  Staff's own Telegram bot, because Ava reads the shared one.
-- **Health.** One live card says when a background job, a login or an ingest turns
-  red, with the fix.
-
-Commitments belong to Ledger. The Chief of Staff is their face, not a second store.
 
 ### Sources
 
@@ -169,19 +128,11 @@ recovery detail lets the user replay and re-run it.
 is archived to the private knowledge store, and the recorder's copilot answers
 questions against the same sources. The archive record owns the outcome. RTI's
 chats, including a standalone one with no recording, stay grounded in its
-sessions and the vault; general chat and the Chief of Staff live in Quick
-Launch AI Chat. The two apps share the chat core, not the conversations.
+sessions and the vault; general chat lives in Quick Launch AI Chat. The two apps share the chat core, not the conversations.
 
 **A launcher request.** The overlay collects a prompt and optional context, the
 local model layer or a named hosted provider answers, and the answer detail
 states which model and which sources were used.
-
-**A proactive card.** Mail ingest writes a client reply to the vault. The
-Chief of Staff trigger sees it on its next run, the brain proposes "log the
-decision", the card lands in the thread under Today, and a notification (and the
-phone doorbell) points at it. Tristan presses Do it; the status writer appends
-the Log line; the verdict is recorded. If a later sent mail shows the work was
-already done, the card closes on its own.
 
 **A system change.** A change lands in the owning repository. Generated files
 are regenerated from their source, not edited. If the change alters the catalog,

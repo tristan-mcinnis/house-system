@@ -43,8 +43,6 @@ built but not yet relied on, `aspirational` is designed but not built.
 - **Recall** (`current`): a CLI that captures thoughts into the memory repository and
   searches it with the open tasks, also reachable from the launcher and the
   Memory panel. It reads no screen data.
-- **Ledger** (`experimental`): a commitments ledger with a disposable index
-  over the file store, in shadow trial.
 
 ## Work surfaces
 
@@ -57,10 +55,6 @@ built but not yet relied on, `aspirational` is designed but not built.
 - **Local model panel** (`current`): the Local Models menu bar shows which local
   models are warm and loads or unloads them. It is the daemon's face; Usage is
   the hosted side.
-- **Chief of Staff** (`experimental`): proposal cards (Do it, Edit, Later, No)
-  from new mail, Slack, Ledger and the calendar, shown in Quick Launch AI Chat's
-  pinned conversation. Nothing acts before a tap unless Tristan chose "Always
-  do this" for that action on that project.
 - **Agent seats** (`experimental`): `rig` runs one Pi agent per tmux seat
   (`role@project`) with one shared dashboard that also fits a phone, plus
   snapshot and restore.

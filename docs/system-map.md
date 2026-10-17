@@ -11,20 +11,20 @@ catalog is allowed to hold. See `docs/architecture.md` for the layer model.
 
 | Layer | Records | Current | Experimental | Aspirational |
 | --- | ---: | ---: | ---: | ---: |
-| Surfaces | 12 | 9 | 3 | 0 |
-| Shared Interaction | 19 | 18 | 1 | 0 |
+| Surfaces | 11 | 9 | 2 | 0 |
+| Shared Interaction | 18 | 18 | 0 | 0 |
 | Orchestration | 7 | 6 | 1 | 0 |
 | Connectors | 23 | 23 | 0 | 0 |
-| Organs | 11 | 6 | 4 | 1 |
+| Organs | 9 | 6 | 2 | 1 |
 | Sources | 11 | 11 | 0 | 0 |
-| Relationships | 28 | 26 | 0 | 2 |
+| Relationships | 21 | 20 | 0 | 1 |
 | Execution Fabric / Tools | 15 | 15 | 0 | 0 |
 | Execution Fabric / Skills | 66 | 65 | 1 | 0 |
 | Execution Fabric / Extensions | 21 | 18 | 3 | 0 |
 | Execution Fabric / Hooks | 9 | 9 | 0 | 0 |
 | Execution Fabric / Workflows | 7 | 6 | 1 | 0 |
 | Execution Fabric / Policies | 6 | 6 | 0 | 0 |
-| **Total** | **235** | | | |
+| **Total** | **224** | | | |
 
 ## Layer stack
 
@@ -42,15 +42,14 @@ catalog is allowed to hold. See `docs/architecture.md` for the layer model.
 
 | Id | Name | Status | Visibility | Description |
 | --- | --- | --- | --- | --- |
-| `sfc-quick-launch` | Quick Launch | current | private | Keyboard-first launcher and instant AI overlay; owns the HouseChatCore package shared with RTI, and is the one face of the Chief of Staff (the pinned AI Chat conversation). |
-| `sfc-rti` | RTI | current | private | Meeting recorder and real-time copilot that archives sessions to the private knowledge vault; sole meeting path. Its chats, standalone ones included, are grounded in sessions and the vault; general chat is Quick Launch AI Chat. |
+| `sfc-quick-launch` | Quick Launch | current | private | Keyboard-first launcher and instant AI overlay; owns the HouseChatCore package shared with RTI. |
+| `sfc-rti` | RTI | current | private | Meeting capture (recording, live transcript, screenshots, raw session archive to the private knowledge vault) and the in-meeting copilot; analysis and summaries happen downstream, not in the app. Its chats, standalone ones included, are grounded in sessions and the vault; general chat is Quick Launch AI Chat. |
 | `sfc-local-dictation` | Local Dictation | current | private | Hold a key, talk, release, and the text lands at the cursor; on-device, never uploaded. Runs its own models in the app for latency and shares only the ~/Models weight store. First candidate for signed public distribution. |
 | `sfc-cotype` | Cotype | experimental | private | Local AI autocomplete in the menu bar; streams completions from the Local Models daemon (gemma-it) and inserts accepted ghost text; the in-process engine is a legacy fallback. Installed, not yet in daily use. |
 | `sfc-memory-menubar` | Memory | current | private | Menu-bar face of the memory layer: the screen-context collector's state and switch (read from screenctx), and capture, search and today over the memory repository (through recall). |
 | `sfc-usage-menubar` | Usage | current | private | One menu-bar panel for every metered hosted AI source (subscriptions and API balances) on the same percent-used axis. |
 | `sfc-local-models-menubar` | Local Models | current | private | Menu-bar face of the local-models daemon: which local models are warm, load and unload, the daemon switch. Usage shows the quota of hosted metered AI; this shows local models. |
 | `sfc-recall-cli` | recall | current | private | Capture-and-search CLI over the memory repository and open tasks; reached from Quick Launch saved actions and the Memory panel; no screen data. |
-| `sfc-ledger-cli` | ledger | experimental | private | Five-verb memory ledger and disposable index in shadow trial; vault files stay the truth, the index is replaceable. |
 | `sfc-screenctx` | screenctx | current | private | Screen-context collector CLI: accessibility-first text capture and frame-on-change stills with local vision enrichment. |
 | `sfc-rig` | rig | experimental | private | Terminal workstation for Pi agents across projects: one tmux session per seat, a shared dashboard session with a narrow phone layout, and verbs to start, send, stop, resume, snapshot and restore. |
 | `sfc-pi-session` | Pi session | current | private | The terminal agent surface that carries the House execution fabric; the parent session orchestrates and owns the final answer. |
@@ -76,7 +75,6 @@ catalog is allowed to hold. See `docs/architecture.md` for the layer model.
 | `si-dictation-recovery` | Dictation recovery detail | current | private | Saved audio with playback plus raw and processed text versions; local audio with a default retention window. |
 | `si-session-browser` | Session browser | current | private | RTI session rows, file selectors, a capped readable column, and confirmed deletion for owned archives. |
 | `si-setup-checklist` | Setup checklist | current | private | Standalone permission panel that re-reads state about once a second so a grant lands without a relaunch. |
-| `si-proposal-card` | Proposal card | experimental | private | One Chief of Staff proposal, answered with Do it, Edit, Later or No before anything acts; keyboard first in the pinned conversation. |
 | `si-terminal-discipline` | Terminal surface discipline | current | private | The same rule without chrome: monochrome, uppercase section labels, two-column rows, one-line status, no boxes or emoji. |
 
 ## Orchestration
@@ -111,8 +109,8 @@ catalog is allowed to hold. See `docs/architecture.md` for the layer model.
 | `conn-rti-hosted` | RTI live transcription and assistant | current | private | RTI streams both live audio legs to Soniox by default, sends retained audio to Soniox's file API for the transcript upgrade, and sends assistant turns to the chosen LLM provider. OCR stays on the Mac. |
 | `conn-quick-launch-providers` | Quick Launch hosted providers | current | private | Answers go to a hosted provider only when the chosen model is hosted; the answer detail names the destination. Keys live in the macOS Keychain. |
 | `conn-usage-apis` | AI usage and balance endpoints | current | private | Usage reads quota and balance from each provider; it sends no prompt or content. Antigravity is read through its local CLI. |
-| `conn-pi-models` | Pi model providers | current | private | Every Pi call reaches a hosted model: the agent session, rig seats, and the Chief of Staff maker and reviewer (DeepSeek Flash and V4 Pro, run as sessionless pi -p calls). |
-| `conn-telegram` | Telegram phone doorbell | current | private | Send-only notices to the owner's phone through the Mac's notifier; two-way replies wait for the Chief of Staff's own bot, which will read only the configured chat. |
+| `conn-pi-models` | Pi model providers | current | private | Every Pi call reaches a hosted model: the agent session and rig seats. |
+| `conn-telegram` | Telegram phone doorbell | current | private | Send-only notices to the owner's phone through the Mac's notifier; two-way replies are not built. |
 | `conn-browser-bsk` | Interactive browser | current | private | Automation of the existing logged-in browser session through the browser CLI and extension. |
 | `conn-helium-local` | Private local browser executor | current | private | Bounded exact-label execution with local models; no navigation and no free-form page read. |
 | `conn-iphone-use` | iPhone agent | current | private | Drives a real iPhone for apps that have no API. |
@@ -128,9 +126,7 @@ catalog is allowed to hold. See `docs/architecture.md` for the layer model.
 | `org-local-tts` | local-tts | current | private | Always-on on-device voice service; the text-to-speech organ of the local layer. |
 | `org-memory-screenctx` | memory-screenctx | current | private | The one screen-history collector: accessibility-first text capture with local vision enrichment and a queryable store. |
 | `org-memory-recall` | memory-recall | current | private | Capture-and-search CLI over the memory repository and open tasks: capture hands a thought to the memory repository's capture CLI (remember is a hidden alias), search scans its markdown. Reads no screen data. |
-| `org-ledger` | ledger | experimental | private | Commitments ledger plus a disposable index over vault files; shadow trial. |
 | `org-housechatcore` | HouseChatCore | current | private | Chat core package owned by Quick Launch and consumed by RTI; the shared seam between the two apps. |
-| `org-chief-of-staff` | chief-of-staff (cos) | experimental | private | The proactive loop: a trigger over new vault mail and Slack, Ledger changes and the calendar snapshot, a tool-less brain whose model calls are sessionless (the local-models /v1/ask is the heartbeat's fallback), one HouseChatCore thread of tiered cards, the vault's gated writers on Do it, and one live health card. Its only face is Quick Launch AI Chat; the ChiefOfStaff.app face was retired on 2026-09-26. |
 | `org-rig` | rig | experimental | private | Seat layer for Pi: a pane-hosted runner that drives Pi over RPC, writes per-seat state files from typed events, and a launchd snapshot every five minutes; no daemon and no database. |
 | `org-house-system` | house-system | experimental | private | Architecture catalog, generated system map and shared conventions for the House family; ships no product and owns no product state. |
 | `org-release-conventions` | House release conventions | aspirational | private | A shared direct-distribution convention (Developer ID, hardened runtime, notarization, Sparkle EdDSA, HTTPS appcast, rollback) that each app applies locally. Design only until the human gates clear. |
@@ -309,12 +305,8 @@ catalog is allowed to hold. See `docs/architecture.md` for the layer model.
 
 ```mermaid
 flowchart LR
-  org_chief_of_staff -->|uses| org_housechatcore
-  sfc_quick_launch -->|faces| org_chief_of_staff
-  org_chief_of_staff -->|reads| org_ledger
   org_rig -->|runs| sfc_pi_session
   org_rig -.->|supersedes| orch_pi_dash
-  org_rig -.->|notifies| org_chief_of_staff
   si_design_system -->|governs| sfc_quick_launch
   si_swift_rule -->|applies-with-exception| sfc_local_dictation
   sfc_quick_launch -->|owns| org_housechatcore
@@ -327,9 +319,6 @@ flowchart LR
   sfc_rti -->|sends| conn_rti_hosted
   sfc_quick_launch -->|sends| conn_quick_launch_providers
   sfc_usage_menubar -->|reads| conn_usage_apis
-  org_chief_of_staff -->|sends| conn_pi_models
-  org_chief_of_staff -->|sends| conn_telegram
-  sfc_ledger_cli -->|indexes| src_project_status
   sfc_pi_session -->|runs| orch_pi_session
   orch_pi_session -->|delegates| orch_subagent_roles
   xd_wf_goal_mode -->|binds| src_task_store
@@ -341,12 +330,8 @@ flowchart LR
 
 | Id | From | To | Kind | Description |
 | --- | --- | --- | --- | --- |
-| `rel-cos-uses-chatcore` | `org-chief-of-staff` | `org-housechatcore` | uses | The Chief of Staff thread is a HouseChatCore conversation record, so any House chat surface can read it. |
-| `rel-quicklaunch-faces-cos` | `sfc-quick-launch` | `org-chief-of-staff` | faces | Quick Launch AI Chat's pinned conversation shows the cos thread and acts only by calling cos; it never writes the thread or the charter itself. |
-| `rel-cos-reads-ledger` | `org-chief-of-staff` | `org-ledger` | reads | Ledger owns commitments and their proof-based closes; the Chief of Staff only turns Ledger changes into cards. |
 | `rel-rig-runs-pi-sessions` | `org-rig` | `sfc-pi-session` | runs | Each rig seat is a Pi session in RPC mode under the rig runner, using the normal Pi agent directory; the dashboard lives outside every Pi session. |
 | `rel-rig-supersedes-pi-dash` | `org-rig` | `orch-pi-dash` | supersedes (aspirational) | rig's dashboard lives outside every Pi session; the in-Pi /dash retires once rig covers what it does. Not done yet. |
-| `rel-rig-needs-you-card` | `org-rig` | `org-chief-of-staff` | notifies (aspirational) | A seat that needs Tristan becomes one Chief of Staff card (one doorbell). Designed, not built. |
 | `rel-design-rule-governs-surfaces` | `si-design-system` | `sfc-quick-launch` | governs | Every House surface draws its values from the one design rule; design-system is the source, apps are consumers. |
 | `rel-swift-rule-governs-local-dictation` | `si-swift-rule` | `sfc-local-dictation` | applies-with-exception | Local Dictation is a Rust app, so it follows the design rule and its own crate conventions rather than the Swift rule. |
 | `rel-quicklaunch-owns-chatcore` | `sfc-quick-launch` | `org-housechatcore` | owns | The chat core is owned by Quick Launch and consumed by RTI; one owner, two consumers. |
@@ -359,9 +344,6 @@ flowchart LR
 | `rel-rti-sends-to-hosted` | `sfc-rti` | `conn-rti-hosted` | sends | Meeting audio and assistant turns leave the machine by default; this is RTI's named exception to local first. |
 | `rel-quicklaunch-hosted-providers` | `sfc-quick-launch` | `conn-quick-launch-providers` | sends | Only when a hosted model is chosen; local models go through conn-local-models. |
 | `rel-usage-reads-provider-apis` | `sfc-usage-menubar` | `conn-usage-apis` | reads | Quota and balance only, never content. |
-| `rel-cos-calls-pi-models` | `org-chief-of-staff` | `conn-pi-models` | sends | One event, its project status and open tasks go to the maker; task closes and reply drafts go to the reviewer. |
-| `rel-cos-rings-telegram` | `org-chief-of-staff` | `conn-telegram` | sends | The phone doorbell for a new card; two-way replies wait for the Chief of Staff's own bot. |
-| `rel-ledger-reads-status` | `sfc-ledger-cli` | `src-project-status` | indexes | The ledger indexes project records without becoming their owner. |
 | `rel-pi-session-orchestrates` | `sfc-pi-session` | `orch-pi-session` | runs | The terminal agent surface runs the parent session. |
 | `rel-orchestrator-delegates` | `orch-pi-session` | `orch-subagent-roles` | delegates | The parent session decomposes work and delegates within the fixed roster. |
 | `rel-goal-binds-task` | `xd-wf-goal-mode` | `src-task-store` | binds | A bound goal names an existing canonical task record; it never creates a parallel store. |

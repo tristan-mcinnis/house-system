@@ -5,6 +5,19 @@ machine and share one visual rule, one code rule and one local computing layer.
 The apps are not features of a platform; they are small tools with one verb
 each, built to the same standard so that learning one means learning them all.
 
+## The layer
+
+House is the layer on the Mac that does three things: it captures what
+happens, it makes that recallable, and it assists in the moment. Capture,
+recall, assist. That is the whole flow.
+
+Synthesis, analysis, judging and deciding do not happen in House. They happen
+downstream, in the vault and the agent runtime, which read what House captured.
+A feature that summarises, scores, tracks commitments or decides what to do
+next belongs there, not here. The proactive Chief of Staff and the commitments
+ledger were retired on 2026-10-17 for exactly this reason, and RTI keeps
+capture and the in-meeting copilot but no in-app meeting analysis.
+
 House System is the readable description of that family: what exists, how the
 pieces fit, and where each fact lives.
 
@@ -37,8 +50,7 @@ honest about what it does:
 machine by default. A hosted service is a deliberate exception, named as such
 in the catalog's connectors, never the quiet default. The largest exceptions
 today: RTI's live meeting transcription goes to hosted Soniox and its assistant
-to a hosted LLM, and every Pi agent, including the Chief of Staff, calls a
-hosted model.
+to a hosted LLM, and every Pi agent calls a hosted model.
 
 **Private by default.** Capture stays on the machine. Communication lanes are
 draft-only until a person says send. Nothing is published, purchased or made

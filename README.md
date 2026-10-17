@@ -118,6 +118,21 @@ The catalog describes these; it does not override any of them. The validator
 cross-checks project slugs against `house/atlas.yaml` so the two cannot drift
 apart silently.
 
+## Retired
+
+Dated 2026-10-17. House captures, makes recallable, and assists in the moment;
+synthesis and decisions belong downstream in the vault and the agent runtime.
+
+- `chief-of-staff` (the proactive card loop and its Quick Launch AI Chat face)
+  and `ledger` (the commitments ledger) are retired. Both did synthesis. Their
+  repositories are archived private on GitHub, and their catalog records,
+  relationships and Quick Launch code are removed.
+- RTI keeps capture (recording, live transcript, screenshots, raw session
+  archive to the vault) and the in-meeting copilot. Its in-app analysis is
+  removed: live notes, discussion guide, findings ledger, end-of-session
+  summary and generated titles, and saved-meeting outputs. The opt-in
+  hand-off of the canonical transcript to the vault stays.
+
 ## Licence
 
 All rights reserved. No licence is granted by its presence here. Third-party
