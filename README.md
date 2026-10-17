@@ -41,6 +41,7 @@ fact lives. It is prose, not a product and not a registry of truth.
 | --- | --- |
 | `docs/system-map.md` | Pointer to `house/atlas.yaml` and the views rendered from it |
 | `docs/` | Vision, principles, architecture, personal context, trust, capabilities, distribution, glossary |
+| `tools/house-usage.py` | Read-only usage counts for each House app |
 | `tests/scrub.sh` | The scrub gate: no home paths, personal emails, key material or private tokens |
 | `Makefile` | `check` |
 
@@ -71,8 +72,21 @@ statement, not a quality verdict, and it never authorises a release.
 ## Check
 
 ```
-make check    # run the scrub gate; prints SCRUB_CLEAN
+make check    # run the scrub gate (prints SCRUB_CLEAN) and the usage tool tests
 ```
+
+## Usage counts
+
+```
+python3 tools/house-usage.py            # last 7 days, aligned table
+python3 tools/house-usage.py --days 30  # a different window
+python3 tools/house-usage.py --json     # rows as JSON
+```
+
+The tool reads each app's own store read-only and prints counts and dates, never
+content. A row that says `no store` means the store was not found. Rows labelled
+`all-time` or `no usage signal` are not windowed counts. It uses the Python
+standard library only.
 
 ## Authority
 

@@ -3,10 +3,11 @@
 .PHONY: help check test clean
 
 help:
-	@echo "make check   run the scrub gate (the gate)"
+	@echo "make check   run the scrub gate and the usage tool tests"
 
 check test:
 	sh tests/scrub.sh
+	python3 -m unittest tests/test_house_usage.py
 
 clean:
 	find . -name '__pycache__' -type d -prune -exec rm -rf {} +
