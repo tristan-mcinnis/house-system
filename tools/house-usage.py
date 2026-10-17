@@ -3,7 +3,6 @@
 
 import argparse
 import json
-import plistlib
 import sqlite3
 import subprocess
 import sys
@@ -117,16 +116,10 @@ def read_quick_launch(ctx):
     return rows
 
 
-def rti_corpus_path(ctx):
-    prefs = ctx.home / "Library" / "Preferences"
-    for domain in ("com.tristan.rti", "com.tristan.rti.personal"):
-        try:
-            value = plistlib.loads((prefs / f"{domain}.plist").read_bytes()).get("rti.corpus.path")
-        except (OSError, plistlib.InvalidFileException):
-            continue
-        if value:
-            return Path(value)
-    return None
+def rti_transcripts_dir(ctx):
+    config = load_json(ctx.home / ".config" / "rti" / "config.json")
+    value = config.get("transcripts_dir") if isinstance(config, dict) else None
+    return Path(value).expanduser() if value else None
 
 
 def files_in_window(root, since):
@@ -141,22 +134,14 @@ def files_in_window(root, since):
 
 
 def read_rti(ctx):
-    sessions = ctx.support / "RTI" / "sessions"
-    if sessions.is_dir():
-        stamps = [p.stat().st_mtime for p in sessions.iterdir() if p.is_dir()]
-        recent = [s for s in stamps if s >= ctx.since]
-        rows = [Row("RTI", "session folders", len(recent), max(stamps, default=None), "RTI/sessions mtime")]
-    else:
-        rows = [missing("RTI", "session folders", "RTI/sessions")]
-    corpus = rti_corpus_path(ctx)
-    if corpus is None:
-        rows.append(missing("RTI", "corpus files written", "rti.corpus.path preference"))
-    elif not corpus.is_dir():
-        rows.append(missing("RTI", "corpus files written", "configured corpus folder"))
-    else:
-        count, last = files_in_window(corpus, ctx.since)
-        rows.append(Row("RTI", "corpus files written", count, last, "rti.corpus.path mtime"))
-    return rows
+    folder = rti_transcripts_dir(ctx)
+    if folder is None:
+        return [missing("RTI", "sessions archived", "transcripts_dir in ~/.config/rti/config.json")]
+    if not folder.is_dir():
+        return [missing("RTI", "sessions archived", "configured transcripts_dir")]
+    stamps = [p.stat().st_mtime for p in folder.glob("rti-session-*-transcript.txt")]
+    recent = [t for t in stamps if t >= ctx.since]
+    return [Row("RTI", "sessions archived", len(recent), max(stamps, default=None), "transcripts_dir rti-session-*-transcript.txt")]
 
 
 def read_cotype(ctx):

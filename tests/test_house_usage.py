@@ -1,6 +1,5 @@
 import importlib.util
 import json
-import plistlib
 import sqlite3
 import tempfile
 import unittest
@@ -104,28 +103,31 @@ class QuickLaunch(ReaderCase):
 
 
 class Rti(ReaderCase):
-    def test_sessions_and_configured_corpus(self):
-        sessions = self.support / "RTI" / "sessions"
-        (sessions / "2026 one").mkdir(parents=True)
-        corpus = self.home / "corpus"
-        (corpus / "sub").mkdir(parents=True)
-        (corpus / "sub" / "note.md").write_text("x")
-        prefs = self.home / "Library" / "Preferences"
-        prefs.mkdir(parents=True)
-        (prefs / "com.tristan.rti.plist").write_bytes(plistlib.dumps({"rti.corpus.path": str(corpus)}))
-        import os
-        os.utime(sessions / "2026 one", (RECENT, RECENT))
-        os.utime(corpus / "sub" / "note.md", (RECENT, RECENT))
-        got = self.by_metric(self.run_reader("RTI"))
-        self.assertEqual(got["session folders"].count, 1)
-        self.assertEqual(got["corpus files written"].count, 1)
+    def write_config(self, folder):
+        config = self.home / ".config" / "rti"
+        config.mkdir(parents=True)
+        (config / "config.json").write_text(json.dumps({"transcripts_dir": str(folder)}))
 
-    def test_configured_but_missing_corpus_is_no_store(self):
-        prefs = self.home / "Library" / "Preferences"
-        prefs.mkdir(parents=True)
-        (prefs / "com.tristan.rti.plist").write_bytes(plistlib.dumps({"rti.corpus.path": str(self.home / "gone")}))
+    def test_counts_archived_sessions_in_window(self):
+        import os
+        folder = self.home / "transcripts"
+        folder.mkdir()
+        recent = folder / "rti-session-20261012-173030-transcript.txt"
+        old = folder / "rti-session-20260601-090000-transcript.txt"
+        other = folder / "rti-session-20261012-173030-rti.md"
+        for path in (recent, old, other):
+            path.write_text("x")
+        os.utime(recent, (RECENT, RECENT))
+        os.utime(other, (RECENT, RECENT))
+        os.utime(old, (0, 0))
+        self.write_config(folder)
         got = self.by_metric(self.run_reader("RTI"))
-        self.assertTrue(got["corpus files written"].source.startswith("no store"))
+        self.assertEqual(got["sessions archived"].count, 1)
+
+    def test_configured_but_missing_folder_is_no_store(self):
+        self.write_config(self.home / "gone")
+        got = self.by_metric(self.run_reader("RTI"))
+        self.assertTrue(got["sessions archived"].source.startswith("no store"))
 
 
 class Cotype(ReaderCase):
