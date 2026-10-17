@@ -1,7 +1,6 @@
 # Glossary
 
-House uses a small vocabulary. These definitions are the ones the catalog and
-the generated map rely on. When a word here contradicts casual usage, this file
+House uses a small vocabulary. These definitions are the ones the House docs rely on. When a word here contradicts casual usage, this file
 wins.
 
 **Surface** — somewhere a person meets the system. A macOS app, a menu-bar
@@ -40,26 +39,24 @@ enforced mechanically where possible. Examples: destructive shell protection,
 one browser route per turn, draft-only communication.
 
 **Connector** — a lane to something outside the machine: a service, a hosted
-model, a cloud host or a device. The catalog names every outbound lane so
+model, a cloud host or a device. [Capabilities](capabilities.md) names every outbound lane so
 privacy claims stay checkable.
 
 **Organ** — a shared local capability with an owning repository: the design
 system, the local model service, the voice service, the screen-context collector,
 the recall CLI, the shared chat core.
 
-**Source (of truth)** — the record that owns a fact. The catalog has a table of
-them, each with exactly one owner and one authority statement.
+**Source (of truth)** — the record that owns a fact. The README has a table of
+them, each with exactly one owner.
 
 **Personal context** — the private layer House serves: identity, preferences,
 direction, and the daily context handed to an agent. It lives outside this
 repository and is never mirrored here. See [personal-context](personal-context.md).
 
-**Catalog** — `catalog/catalog.yaml`. A descriptive, machine-readable inventory
-of records with layer, status, visibility and references. It creates nothing and
-owns no product fact.
-
-**System map** — `docs/system-map.md`. The generated human-readable view of the
-catalog. Disposable output.
+**Atlas** — `house/atlas.yaml`, the hand-edited project and relationship map
+for the house group. The code atlas generator renders it into the code
+directory's `CLAUDE.md` and the vault code index. Those rendered views are
+disposable output.
 
 **Status** — `current`, `experimental` or `aspirational`. A statement of
 maturity, not quality and not release.

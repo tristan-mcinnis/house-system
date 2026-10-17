@@ -8,8 +8,8 @@ decisions are reserved to a human.
 
 **On the machine.** Inference, transcription, speech, screen capture and memory
 are local by default. The local model service and the voice service are the
-shared serving layer. A hosted service is a named exception, visible in the
-catalog's `connectors` table, never the quiet default.
+shared serving layer. A hosted service is a named exception, visible in
+[capabilities](capabilities.md), never the quiet default.
 
 **At the edge.** Every outbound lane is named and classified:
 
@@ -24,8 +24,8 @@ catalog's `connectors` table, never the quiet default.
 
 **In an artifact.** No credential, token, private identity content, client
 material or absolute machine path belongs in a repository. Secrets live in the
-Keychain or a permission-restricted file, never in source. The catalog validator
-mechanically rejects the machine-checkable cases.
+Keychain or a permission-restricted file, never in source. This repository's
+scrub gate (`make check`) mechanically rejects the machine-checkable cases.
 
 ## What is not trusted
 
@@ -49,9 +49,9 @@ it cannot.
 | One browser route per turn, and a private lane for private work | The browser route classifier |
 | Chinese sources go to the Chinese-first lane | The search route classifier |
 | Email and Slack stay draft-only | The ops hook and the lane's own CLI |
-| No hand edits to a generated view | The freshness check and the map builder |
-| One owner per fact | The validator's single-authority check |
-| No credential or absolute path in the catalog | The safety scan |
+| No hand edits to a generated view | The code atlas generator, which rewrites its views |
+| One owner per fact | The atlas, the repository contracts and review |
+| No credential, client name or absolute path in this repository | The scrub gate (`make check`) |
 
 Where a check aborts, the alternative is proposed. The same command is not
 retried.

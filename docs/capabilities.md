@@ -1,12 +1,11 @@
 # Capabilities
 
 A capability is what House can do, and how it reaches the thing that does it:
-an organ on the machine or a named connector. This document is the human
-summary. The machine list, with ids, status and exposure, is the catalog's
-`connectors` and `organs` tables.
+an organ on the machine or a named connector. This document is the human list,
+and the only list. Which repository provides each organ is in `house/atlas.yaml`.
 
-Status uses the catalog's meaning: `current` is relied on, `experimental` is
-built but not yet relied on, `aspirational` is designed but not built.
+Status words: `current` is relied on, `experimental` is built but not yet
+relied on, `aspirational` is designed but not built.
 
 ## Capture
 
@@ -102,6 +101,25 @@ built but not yet relied on, `aspirational` is designed but not built.
   and research-grade translation.
 - **Knowledge and writing** (`current`): case studies, artifact management, and
   a deterministic prose-quality gate.
+
+## Lanes that leave the machine
+
+These are the named exceptions to local first. Anything not listed here stays on
+the machine.
+
+- **RTI**: live audio for both legs goes to hosted Soniox by default. Retained
+  audio goes to Soniox's file API for the transcript upgrade. Assistant turns go
+  to the chosen LLM provider. OCR stays on the Mac.
+- **Quick Launch**: an answer goes to a hosted provider only when the chosen
+  model is hosted. The answer detail names the destination. Keys live in the
+  macOS Keychain.
+- **Usage**: reads quota and balance from each provider. It sends no prompt and
+  no content. Antigravity is read through its local CLI.
+- **Pi**: every agent call, including every `rig` seat, reaches a hosted model.
+- **Notices**: Telegram is send-only, to the owner's phone through the Mac's
+  notifier. Two-way replies are not built.
+- **Hosted by request**: web search, social data, transcription and the
+  repository host (private by default) run per task, never as a background sync.
 
 ## Not yet built
 

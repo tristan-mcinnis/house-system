@@ -41,13 +41,13 @@ state.
 
 ## What this repository records
 
-The catalog records *that* a personal context layer exists, which record owns
+These docs record *that* a personal context layer exists, which record owns
 which kind of fact, and where the boundary is. It records categories only.
 
 It does not record names, preferences, identity content, memory content,
 transcripts, client material, or any file location inside the private store. The
-validator rejects absolute paths, email addresses and credential shapes; the
-repository contract rejects the rest.
+scrub gate (`make check`) rejects absolute paths, email addresses and
+credential shapes; the repository contract rejects the rest.
 
 ## Boundary rules
 
@@ -61,8 +61,8 @@ repository contract rejects the rest.
 
 ## Why the boundary is documented
 
-Because a privacy claim is only checkable if the lanes are named. The catalog's
-`connectors` table names every outbound lane and marks which are read-only or
-draft-only, so "local by default" is a statement someone can verify rather than
-a slogan. The `sources` table names who owns each kind of fact, so "one record,
-one owner" is likewise checkable.
+Because a privacy claim is only checkable if the lanes are named.
+[Capabilities](capabilities.md) names every outbound lane and marks which are
+read-only or draft-only, so "local by default" is a statement someone can verify
+rather than a slogan. The README authority table names who owns each kind of
+fact, so "one record, one owner" is likewise checkable.

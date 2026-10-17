@@ -97,5 +97,5 @@ scripts and dry-run path live in its own repository. This document defines what
 that plumbing must satisfy; it does not contain the plumbing and it does not
 claim the app is ready.
 
-The `public_candidate` flag in the catalog marks the intention. It grants
-nothing.
+Local Dictation is the stated first candidate. Naming a candidate is an
+intention only. It grants nothing.

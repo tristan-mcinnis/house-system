@@ -2,8 +2,8 @@
 
 House is a stack of small layers with one owner each. This document states what
 each layer is responsible for, what it is not, and how work flows through it.
-The [system map](system-map.md) is the generated inventory; this document is the
-reasoning behind it.
+The [system map](system-map.md) says where the project graph lives; this document
+is the reasoning behind it.
 
 ## Layers
 
@@ -76,7 +76,7 @@ shape and current membership; the runtime owns the implementation.
 A capability is how House reaches something: a connector to a service, or an
 organ on the machine.
 
-- Connectors are outbound lanes. Every one is named in the catalog so a privacy
+- Connectors are outbound lanes. Every one is named in [capabilities](capabilities.md) so a privacy
   claim stays checkable, including the lanes an app opens itself (`in-app`):
   RTI's hosted transcription and assistant, Quick Launch's hosted providers,
   Usage's quota reads, and the hosted models every Pi call reaches. Several are
@@ -94,8 +94,7 @@ organ needs a seam, not a copy.
 
 ### Sources
 
-Every fact has exactly one owning record. The catalog's sources table lists them
-with an owner and a one-line authority statement. The important ones:
+Every fact has exactly one owning record. The important ones:
 
 - Project relationships: `house/atlas.yaml`, hand-edited.
 - Portfolio purpose, tier and activity: the code atlas, above the group.
@@ -106,9 +105,8 @@ with an owner and a one-line authority statement. The important ones:
 - Decisions: the owning decision record.
 - Identity: the private identity store, human-gated and never mirrored here.
 
-The catalog references these and never restates them. Validation cross-checks
-project slugs against the atlas, so a rename that lands in one place and not the
-other fails the gate.
+This repository references these and never restates them. It keeps no project
+list of its own, so a rename lands in `house/atlas.yaml` once.
 
 ### Personal context
 
@@ -135,9 +133,10 @@ local model layer or a named hosted provider answers, and the answer detail
 states which model and which sources were used.
 
 **A system change.** A change lands in the owning repository. Generated files
-are regenerated from their source, not edited. If the change alters the catalog,
-the catalog is edited, `make check` runs, and the map is regenerated and
-committed.
+are regenerated from their source, not edited. A change to which project builds
+on which goes into `house/atlas.yaml`, and the code atlas generator re-renders
+the views. A change to the reasoning goes into these docs, and `make check` runs
+the scrub gate.
 
 ## Boundaries
 
@@ -145,14 +144,57 @@ committed.
 | --- | --- |
 | Repository | Each product builds, tests and releases in its own repository |
 | Authority | One owning record per fact; derived views are disposable |
-| Machine | Local by default; every outbound lane is named in the catalog |
+| Machine | Local by default; every outbound lane is named in capabilities |
 | Human | Publishing, spending, signing, sending and exposure changes are gated |
-| This repository | Describes and validates; ships nothing and owns no product state |
+| This repository | Describes; ships nothing and owns no product state |
 
 ## Extension points
 
 A new app follows the same path: state its floor and link the two rules in its
 own contract file, register any new shared component in `design-system` first,
-use the local serving layer rather than a bespoke model path, and add a catalog
-record with honest status. Nothing about the family's shape changes when a new
-member joins; the map just gains a row.
+use the local serving layer rather than a bespoke model path, and add a project
+entry to `house/atlas.yaml`. Nothing about the family's shape changes when a new
+member joins; the atlas just gains an entry.
+
+## Edges the atlas does not model
+
+`house/atlas.yaml` holds project-to-project `builds_on` edges. These facts cut
+across layers and are not project edges, so they live here.
+
+- **Ownership of the chat core.** HouseChatCore is its own package in
+  `house-chat-core`, extracted from Quick Launch. Quick Launch and RTI both build
+  it. RTI keeps its own sources and tests.
+- **Rig and the Pi session.** Each `rig` seat is a Pi session in RPC mode under
+  the rig runner, using the normal Pi agent directory. The dashboard lives
+  outside every Pi session. The in-Pi `/dash` retires once rig covers what it
+  does. That retirement is not done yet.
+- **Local Dictation and the Swift rule.** Local Dictation is a Rust app, so it
+  follows the design rule and its own crate conventions, not the Swift rule.
+- **Local Dictation and the model store.** Its weights live in the shared
+  model store, but its models run in the app, not through the daemon. Daemon
+  transcription is a later phase.
+- **Cotype and the daemon.** Completions stream from the daemon-managed
+  `llama-server` (gemma-it). The daemon owns the weights and their load and
+  unload. The in-process engine is an opt-in legacy fallback.
+- **Memory panel.** It runs `screenctx status` for collector state and counts,
+  and switches the collector on and off. It runs the `recall` CLI for capture,
+  search and today, and never writes the memory repository itself.
+- **Goals and tasks.** A bound goal names an existing canonical task record. It
+  never creates a parallel store.
+- **Day packet.** A hook reads the generated packet into each request and writes
+  nothing back.
+- **Route policies.** The browser policy decides whether the interactive lane may
+  be used this turn. Chinese-script queries go to the Chinese-first search lane.
+- **Terminal surfaces.** CLIs express the design rule as text discipline.
+
+## Execution fabric membership
+
+Hooks: day packet loading, ops-skill triggering for mail, calendar, Slack and
+files, browser and search route classification, the destructive-shell guard,
+document work mode, the effort budget, the status footer and session titles.
+Workflows: plan mode, goal mode with its cooperative bridge, document modes,
+maker-checker, quick images, and prewalk (`experimental`: a strong model plans
+and lands the first edit, a cheaper one continues). Tool, skill and extension
+inventories are owned by the runtime that loads them and change too often to
+list here. Orchestration also includes interactive subagents in dedicated tmux
+panes and a session checklist that is never a canonical task store.

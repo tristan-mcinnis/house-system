@@ -5,11 +5,10 @@ native Apple apps and shared organs that run on one design rule, one Swift rule,
 and one local computing layer.
 
 This repository exists so that the shape of House can be read in one place. It
-describes the layers, the components in each layer, how mature each one is, and
-where authority for every fact lives. It is a catalogue and a map, not a product
-and not a registry of truth.
+describes the layers, how mature each one is, and where authority for every
+fact lives. It is prose, not a product and not a registry of truth.
 
-- Read the [system map](docs/system-map.md) for the generated inventory.
+- Read the [system map](docs/system-map.md) to find the project graph.
 - Read the [architecture](docs/architecture.md) for the layer model.
 - Read the [glossary](docs/glossary.md) before using House terms loosely.
 
@@ -17,8 +16,6 @@ and not a registry of truth.
 
 - The canonical description of the House layers: surfaces, shared interaction,
   orchestration, the Pi execution fabric, connectors, organs and sources.
-- The machine-readable catalogue at [`catalog/catalog.yaml`](catalog/catalog.yaml),
-  validated and rendered by the tools in [`tools/`](tools).
 - The record of House conventions that are shared across apps, including direct
   distribution.
 
@@ -27,25 +24,25 @@ and not a registry of truth.
 - It is not a monorepo. Every House product stays in its own repository and is
   built, tested and released there.
 - It is not the relationship authority. Project-to-project relationships and
-  each child repository's role are owned by `house/atlas.yaml`. Portfolio
+  each child repository's role are owned by `house/atlas.yaml`, which
+  `code-atlas.py` renders into the code directory's `CLAUDE.md` and the vault
+  code index. Portfolio
   purpose, tier and activity are owned by the code atlas. This repository
   references both and never restates them.
 - It is not a source of truth for any product's state, tasks, decisions or
   identity. Those stay with their owning records.
 - It holds no secrets, credentials, private identity content, client material or
-  absolute machine paths. Validation fails the build if the machine-checkable
+  absolute machine paths. The scrub gate fails the build if the machine-checkable
   cases appear.
 
 ## Layout
 
 | Path | What it holds |
 | --- | --- |
-| `catalog/catalog.yaml` | The machine-readable inventory: records, status, visibility, references |
-| `docs/system-map.md` | Generated human-readable map. Never hand-edited |
-| `docs/` | Vision, principles, architecture, personal context, trust, capabilities, distribution, glossary, catalog schema |
-| `tools/` | Deterministic validator, map builder and `house_status.py` (standard library plus PyYAML) |
-| `tests/` | Unit tests for validation, safety scanning and map freshness |
-| `Makefile` | `validate`, `map`, `test`, `check`, `status` |
+| `docs/system-map.md` | Pointer to `house/atlas.yaml` and the views rendered from it |
+| `docs/` | Vision, principles, architecture, personal context, trust, capabilities, distribution, glossary |
+| `tests/scrub.sh` | The scrub gate: no home paths, personal emails, key material or private tokens |
+| `Makefile` | `check` |
 
 ## The layer model in one screen
 
@@ -65,42 +62,17 @@ work. The execution fabric is what can actually be run. Capabilities are how the
 work reaches a service or a model. Sources are where a fact lives. Personal
 context is the private layer that House serves and deliberately does not copy.
 
-## Status and visibility
+## Maturity
 
-Every catalog record carries two independent facts.
+Every component the docs mention is `current` (in use), `experimental` (built,
+not yet relied on), or `aspirational` (designed, not built). Maturity is a
+statement, not a quality verdict, and it never authorises a release.
 
-- **Status**: `current` (in use), `experimental` (built, not yet relied on), or
-  `aspirational` (designed, not built).
-- **Visibility**: `public` or `private`. Every record today is private. A record
-  may also carry `public_candidate: true`, which states an intention only; it
-  is not a decision and does not change exposure.
-
-Status is a statement of maturity, not a quality verdict, and it never
-authorises a release.
-
-## Validate
+## Check
 
 ```
-make check    # validate the catalog, prove the map is current, run the tests
-make map      # regenerate docs/system-map.md after a catalog change
-make status   # Git state of every child in ../atlas.yaml; exit 1 if work exists only on this machine
+make check    # run the scrub gate; prints SCRUB_CLEAN
 ```
-
-`make status` marks a child with uncommitted files as `DIRTY`, never plain
-`ok`. Dirty alone does not change the exit status.
-
-The group file `../atlas.yaml` is outside this repository (the `house/` folder
-is not a Git repository). Both tools take `--atlas PATH`, then the `HOUSE_ATLAS`
-environment variable, then fall back to `../atlas.yaml`. On a fresh clone with
-no parent file, `make validate` warns and skips the slug cross-check, and
-`make status` prints one error line and exits 2. The tests read the committed
-copy `tests/fixtures/atlas.yaml`, so `make check` passes anywhere. When a
-catalog record names a new child, add its slug to the fixture.
-
-`make check` is the gate. It fails on a missing field, an unknown status, a
-duplicate id, a dangling reference, two records claiming the same authority, a
-project slug that is not in `house/atlas.yaml`, or any absolute path, email
-address or credential shape in the catalog.
 
 ## Authority
 
@@ -114,9 +86,8 @@ address or credential shape in the catalog.
 | Open work | the project's canonical task store |
 | Identity, preferences, direction | the private identity store, human-gated |
 
-The catalog describes these; it does not override any of them. The validator
-cross-checks project slugs against `house/atlas.yaml` so the two cannot drift
-apart silently.
+These docs describe the owners; they do not override any of them. This
+repository keeps no project list, so it cannot drift from `house/atlas.yaml`.
 
 ## Retired
 
@@ -125,8 +96,8 @@ synthesis and decisions belong downstream in the vault and the agent runtime.
 
 - `chief-of-staff` (the proactive card loop and its Quick Launch AI Chat face)
   and `ledger` (the commitments ledger) are retired. Both did synthesis. Their
-  repositories are archived private on GitHub, and their catalog records,
-  relationships and Quick Launch code are removed.
+  repositories are archived private on GitHub, and their relationships
+  and Quick Launch code are removed.
 - RTI keeps capture (recording, live transcript, screenshots, raw session
   archive to the vault) and the in-meeting copilot. Its in-app analysis is
   removed: live notes, discussion guide, findings ledger, end-of-session
