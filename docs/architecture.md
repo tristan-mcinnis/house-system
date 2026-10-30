@@ -15,10 +15,9 @@ repositories and released independently.
 
 The apps today are Quick Launch (launcher and AI overlay), RTI (meeting recorder
 and copilot), Local Dictation (push-to-talk dictation), Cotype (menu-bar
-completion), Memory (memory capture and search), Usage (quota of hosted metered
-AI), and Local Models (which local models are warm; the daemon's face).
-Terminal surfaces are `recall`, `screenctx` and `rig` (agent seats and their
-dashboard). The agent session is a surface too, and it is the one that carries
+completion, parked since 2026-10-18), Usage (quota of hosted metered AI), and
+Local Models (which local models are warm; the daemon's face). The terminal
+surface is `recall`. The agent session is a surface too, and it is the one that carries
 the execution fabric.
 
 A surface owns its own permissions, onboarding, persistence and bundle identity.
@@ -51,10 +50,8 @@ parent, not acceptance.
 
 Plan mode, goal mode and the session checklist are orchestration lifecycle
 tools. A goal binds to an existing canonical task record; it never creates a
-parallel store. Two things show running agents today: `rig`'s dashboard, a
-tmux session outside every Pi session that lists the seats (`role@project`),
-and the older in-Pi `/dash` control plane, which is no longer grown and retires once
-rig covers it.
+parallel store. The in-Pi `/dash` control plane shows running agents. (`rig`,
+its planned replacement, was retired unused on 2026-10-21.)
 
 ### Execution fabric
 
@@ -164,10 +161,6 @@ across layers and are not project edges, so they live here.
 - **Ownership of the chat core.** HouseChatCore is its own package in
   `house-chat-core`, extracted from Quick Launch. Quick Launch and RTI both build
   it. RTI keeps its own sources and tests.
-- **Rig and the Pi session.** Each `rig` seat is a Pi session in RPC mode under
-  the rig runner, using the normal Pi agent directory. The dashboard lives
-  outside every Pi session. The in-Pi `/dash` retires once rig covers what it
-  does. That retirement is not done yet.
 - **Local Dictation and the Swift rule.** Local Dictation is a Rust app, so it
   follows the design rule and its own crate conventions, not the Swift rule.
 - **Local Dictation and the model store.** Its weights live in the shared
@@ -176,9 +169,6 @@ across layers and are not project edges, so they live here.
 - **Cotype and the daemon.** Completions stream from the daemon-managed
   `llama-server` (gemma-it). The daemon owns the weights and their load and
   unload. The in-process engine is an opt-in legacy fallback.
-- **Memory panel.** It runs `screenctx status` for collector state and counts,
-  and switches the collector on and off. It runs the `recall` CLI for capture,
-  search and today, and never writes the memory repository itself.
 - **Goals and tasks.** A bound goal names an existing canonical task record. It
   never creates a parallel store.
 - **Day packet.** A hook reads the generated packet into each request and writes

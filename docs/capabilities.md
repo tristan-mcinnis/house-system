@@ -13,15 +13,13 @@ relied on, `aspirational` is designed but not built.
   the cursor. Transcription and optional cleanup run on device inside the app
   (its weights sit in the shared model store, but the daemon does no dictation
   work), with a recovery detail for retained audio and text versions.
-- **Screen context** (`current`): accessibility-first text capture plus
-  frame-on-change stills, enriched locally and stored for query. `screenctx` is
-  the one screen-history collector.
+- **Screen context** (`retired` 2026-10-18): House keeps no screen history.
+  `screenctx` was sunset unused; a screenshot reaches a chat only when asked for.
 - **Meeting capture** (`current`): system and microphone audio recorded,
   transcribed in real time, and archived; the recorder can answer questions
   against the session.
-- **Quick capture** (`current`): save a thought in seconds from the Memory menu
-  bar or from Quick Launch's Capture to Memory action. Both hand the text to
-  `recall capture`, which writes into the memory repository's triage queue.
+- **Quick capture** (`current`): save a thought in seconds from Quick Launch's
+  Capture to Memory action. It hands the text to `recall capture`, which writes into the memory repository's triage queue.
 
 ## Local intelligence
 
@@ -37,11 +35,8 @@ relied on, `aspirational` is designed but not built.
 
 ## Memory
 
-- **Collector** (`current`): the screen-context store, captured and enriched
-  locally.
 - **Recall** (`current`): a CLI that captures thoughts into the memory repository and
-  searches it with the open tasks, also reachable from the launcher and the
-  Memory panel. It reads no screen data.
+  searches it with the open tasks, also reachable from the launcher. It reads no screen data.
 
 ## Work surfaces
 
@@ -54,9 +49,6 @@ relied on, `aspirational` is designed but not built.
 - **Local model panel** (`current`): the Local Models menu bar shows which local
   models are warm and loads or unloads them. It is the daemon's face; Usage is
   the hosted side.
-- **Agent seats** (`experimental`): `rig` runs one Pi agent per tmux seat
-  (`role@project`) with one shared dashboard that also fits a phone, plus
-  snapshot and restore.
 
 ## Services and data
 
@@ -115,7 +107,7 @@ the machine.
   macOS Keychain.
 - **Usage**: reads quota and balance from each provider. It sends no prompt and
   no content. Antigravity is read through its local CLI.
-- **Pi**: every agent call, including every `rig` seat, reaches a hosted model.
+- **Pi**: every agent call reaches a hosted model.
 - **Notices**: Telegram is send-only, to the owner's phone through the Mac's
   notifier. Two-way replies are not built.
 - **Hosted by request**: web search, social data, transcription and the

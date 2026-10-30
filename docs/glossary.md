@@ -73,23 +73,20 @@ surface; `local-models` is an organ. RTI's shared chat core is a library organ
 owned by Quick Launch.
 
 **Face** — a surface whose job is to show and steer an organ it does not own.
-Memory is the face of `screenctx` and `recall`; the Local Models menu bar is the face of the
+The Local Models menu bar is the face of the
 `local-models` daemon. A face reads the organ's state and acts only through the
 organ's own commands.
 
-**Capture vs remember** — capture records something for later sorting: the
-screen, automatically (`screenctx`), or one typed thought into the memory repositorytriage queue (`recall capture`). Remember has one meaning: keep a durable fact,
+**Capture vs remember** — capture records something for later sorting: one typed
+thought into the memory repository triage queue (`recall capture`). Remember has one meaning: keep a durable fact,
 through `memory-remember.py` in the memory repository. Which tool holds what:
 
 | Tool | Holds | How it gets there |
 | --- | --- | --- |
-| `screenctx` | Screen text and stills | The one screen-history collector; Memory switches it on and off |
-| `recall capture` | One thought in the the memory repository triage queue | Typed, or sent from Memory or Quick Launch (`recall remember` still works as a hidden alias) |
+| `recall capture` | One thought in the memory repository triage queue | Typed, or sent from Quick Launch (`recall remember` still works as a hidden alias) |
 | `memory-remember.py` | One durable fact in the memory repository | A deliberate write through the memory repository's own CLI |
 | RTI | Meeting transcript and audio | Recorded, archived to the vault on stop |
 
-Quick Launch no longer has a screen-history collector of its own (retired
-2026-09-26); screen history means `screenctx`.
+House keeps no screen history: Quick Launch's collector was retired on
+2026-09-26 and `screenctx` on 2026-10-18.
 
-**Seat** — a `rig` address, `role@project`: one tmux session running one Pi
-agent, with its state in a sidecar file the rig dashboard reads.

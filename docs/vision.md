@@ -39,8 +39,7 @@ honest about what it does:
 - One local serving layer, owned by `local-models`, so an app does not ship its
   own inference story. The named exceptions: Local Dictation runs its models in
   the app, a deliberate choice for latency (decided 2026-09-26; weights still
-  live in the shared store), and `local-tts` is its own voice service on its own
-  port, registered in the same store.
+  live in the shared store).
 - One execution fabric, the agent runtime, so the same tools, policies and
   verification apply to every task.
 
