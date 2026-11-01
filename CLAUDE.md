@@ -8,7 +8,7 @@ conventions; it owns no product, no task store and no product state.
 
 - Test: `make test` (same as `make check`). Nothing compiles, so there is no
   `make build` and no Swift warnings to treat as errors.
-- This repository is documentation only. No code, no registry, no generated files.
+- Documentation plus one small tool, `tools/house-usage.py`, with its tests. No registry, no generated files.
 - Gate: `make check` runs the scrub gate (`tests/scrub.sh`). Run it before every
   commit. It fails on absolute home paths, personal email addresses, key
   material and the private tokens in the gitignored `.scrub-private`.
