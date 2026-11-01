@@ -4,6 +4,8 @@
 
 help:
 	@echo "make check   run the scrub gate and the usage tool tests"
+	@echo "make test    same as make check"
+	@echo "No build or install target: nothing here compiles or installs."
 
 check test:
 	sh tests/scrub.sh

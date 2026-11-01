@@ -6,6 +6,8 @@ conventions; it owns no product, no task store and no product state.
 
 ## Local facts
 
+- Test: `make test` (same as `make check`). Nothing compiles, so there is no
+  `make build` and no Swift warnings to treat as errors.
 - This repository is documentation only. No code, no registry, no generated files.
 - Gate: `make check` runs the scrub gate (`tests/scrub.sh`). Run it before every
   commit. It fails on absolute home paths, personal email addresses, key
