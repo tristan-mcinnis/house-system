@@ -29,10 +29,9 @@ class ReaderCase(unittest.TestCase):
         self.support = self.home / "Library" / "Application Support"
         self.support.mkdir(parents=True)
         self.health = None
-        self.procs = []
 
     def ctx(self):
-        return hu.Ctx(self.home, SINCE, NOW, lambda url: self.health, lambda: self.procs)
+        return hu.Ctx(self.home, SINCE, NOW, lambda url: self.health)
 
     def run_reader(self, app):
         return hu.READERS[app](self.ctx())
@@ -43,7 +42,7 @@ class ReaderCase(unittest.TestCase):
 
 class MissingStores(ReaderCase):
     def test_every_reader_reports_no_store_on_an_empty_home(self):
-        for app in ("Local Dictation", "Quick Launch", "RTI", "Cotype", "memory-screenctx", "Usage"):
+        for app in ("Local Dictation", "Quick Launch", "RTI", "Cotype", "Usage"):
             rows = self.run_reader(app)
             self.assertTrue(rows, app)
             self.assertTrue(all(r.count is None and r.source.startswith("no store") for r in rows), app)
@@ -142,25 +141,6 @@ class Cotype(ReaderCase):
         self.assertIn("personalization updated in window", got)
 
 
-class ScreenCtx(ReaderCase):
-    def test_window_counts_and_vision_table(self):
-        root = self.support / "screenctx"
-        root.mkdir()
-        db = sqlite3.connect(root / "context.sqlite3")
-        db.execute("CREATE TABLE block (id INTEGER PRIMARY KEY, started_at REAL)")
-        db.execute("CREATE TABLE tick_log (ts REAL, outcome TEXT)")
-        db.execute("CREATE TABLE vision (id INTEGER PRIMARY KEY, ts REAL, summary TEXT)")
-        db.executemany("INSERT INTO block (started_at) VALUES (?)", [(RECENT,), (OLD,)])
-        db.executemany("INSERT INTO tick_log VALUES (?, 'ok')", [(RECENT,), (RECENT + 1,), (OLD,)])
-        db.execute("INSERT INTO vision (ts, summary) VALUES (?, 's')", (RECENT,))
-        db.commit()
-        db.close()
-        got = self.by_metric(self.run_reader("memory-screenctx"))
-        self.assertEqual(got["blocks captured"].count, 1)
-        self.assertEqual(got["collector ticks"].count, 2)
-        self.assertEqual(got["vision rows"].count, 1)
-
-
 class LocalModels(ReaderCase):
     def test_healthy_daemon_counts_loaded_backends(self):
         self.health = {"backends": {"a": {"loaded_model": "m"}, "b": {"loaded_model": None}}}
@@ -177,15 +157,6 @@ class Usage(ReaderCase):
         (root / "events.log").write_text("\n".join(lines))
         (row,) = self.run_reader("Usage")
         self.assertEqual(row.count, 1)
-
-
-class ProcessOnly(ReaderCase):
-    def test_running_flags(self):
-        self.procs = ["/Applications/Memory.app/Contents/MacOS/memory-bar", "/x/pocket-tts"]
-        self.assertEqual(self.run_reader("Memory menu bar")[0].count, 1)
-        self.assertEqual(self.run_reader("local-tts")[0].count, 1)
-        self.procs = []
-        self.assertEqual(self.run_reader("local-tts")[0].count, 0)
 
 
 class Output(ReaderCase):

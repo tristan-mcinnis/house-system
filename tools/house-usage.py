@@ -4,7 +4,6 @@
 import argparse
 import json
 import sqlite3
-import subprocess
 import sys
 import time
 import urllib.request
@@ -33,14 +32,10 @@ class Ctx:
     since: float
     now: float
     http_get: Callable[[str], Optional[dict]]
-    process_names: Callable[[], list]
     support: Path = field(init=False)
 
     def __post_init__(self):
         self.support = self.home / "Library" / "Application Support"
-
-    def running(self, needle):
-        return any(needle in name for name in self.process_names())
 
 
 def missing(app, metric, source):
@@ -165,32 +160,6 @@ def read_cotype(ctx):
     return rows
 
 
-def vision_stamp_column(db):
-    conn = open_ro(db)
-    try:
-        columns = {r[1] for r in conn.execute("PRAGMA table_info(vision)")}
-    finally:
-        conn.close()
-    return next((c for c in ("ts", "created_at", "captured_at", "started_at") if c in columns), None)
-
-
-def read_screenctx(ctx):
-    db = ctx.support / "screenctx" / "context.sqlite3"
-    if not db.exists():
-        return [missing("memory-screenctx", "blocks captured", "context.sqlite3")]
-    blocks, last_block = sql_one(db, "SELECT COUNT(*), MAX(started_at) FROM block WHERE started_at >= ?", (ctx.since,))
-    ticks, last_tick = sql_one(db, "SELECT COUNT(*), MAX(ts) FROM tick_log WHERE ts >= ?", (ctx.since,))
-    rows = [
-        Row("memory-screenctx", "blocks captured", blocks, last_block, "block"),
-        Row("memory-screenctx", "collector ticks", ticks, last_tick, "tick_log"),
-    ]
-    column = vision_stamp_column(db)
-    if column:
-        count, last = sql_one(db, f"SELECT COUNT(*), MAX({column}) FROM vision WHERE {column} >= ?", (ctx.since,))
-        rows.append(Row("memory-screenctx", "vision rows", count, last, "vision"))
-    return rows
-
-
 def read_local_models(ctx):
     metric = "daemon running (no request stats exposed)"
     health = ctx.http_get(LOCAL_MODELS_HEALTH)
@@ -219,28 +188,13 @@ def read_usage(ctx):
     return [Row("Usage", "app launches (no panel-open signal)", launches, last, "Usage/events.log")]
 
 
-def read_memory_menubar(ctx):
-    status = ctx.support / "House" / "commands" / "memory.status.json"
-    stamp = status.stat().st_mtime if status.exists() else None
-    return [Row("Memory menu bar", "process running (no usage signal)", int(ctx.running("memory-bar")), stamp, "process list, memory.status.json mtime")]
-
-
-def read_local_tts(ctx):
-    log = ctx.home / "Library" / "Logs" / "local-tts.log"
-    stamp = log.stat().st_mtime if log.exists() else None
-    return [Row("local-tts", "process running (no usage signal)", int(ctx.running("pocket-tts")), stamp, "process list, log mtime includes health polls")]
-
-
 READERS = {
     "Local Dictation": read_dictation,
     "Quick Launch": read_quick_launch,
     "RTI": read_rti,
     "Cotype": read_cotype,
-    "memory-screenctx": read_screenctx,
     "local-models": read_local_models,
     "Usage": read_usage,
-    "Memory menu bar": read_memory_menubar,
-    "local-tts": read_local_tts,
 }
 
 
@@ -262,11 +216,6 @@ def fetch_json(url):
         return None
 
 
-def list_processes():
-    out = subprocess.run(["ps", "-axo", "comm"], capture_output=True, text=True, check=False).stdout
-    return out.splitlines()
-
-
 def fmt_time(stamp):
     if stamp is None:
         return "-"
@@ -286,7 +235,7 @@ def main(argv=None):
     parser.add_argument("--json", action="store_true", help="print rows as JSON")
     args = parser.parse_args(argv)
     now = time.time()
-    ctx = Ctx(Path.home(), now - args.days * 86400, now, fetch_json, list_processes)
+    ctx = Ctx(Path.home(), now - args.days * 86400, now, fetch_json)
     rows = collect(ctx)
     if args.json:
         print(json.dumps({"days": args.days, "rows": [asdict(r) for r in rows]}, indent=2))
