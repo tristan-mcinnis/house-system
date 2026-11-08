@@ -113,9 +113,9 @@ synthesis and decisions belong downstream in the vault and the agent runtime.
   repositories are archived private on GitHub, and their relationships
   and Quick Launch code are removed.
 - RTI keeps capture (recording, live transcript, screenshots, raw session
-  archive to the vault) and the in-meeting copilot. Its in-app analysis is
-  removed: live notes, discussion guide, findings ledger, end-of-session
-  summary and generated titles, and saved-meeting outputs. The opt-in
+  archive to the vault), Live Notes and the in-meeting copilot. The rest of
+  its in-app analysis is removed: discussion guide, findings ledger,
+  end-of-session summary and generated titles, and saved-meeting outputs. The opt-in
   hand-off of the canonical transcript to the vault stays.
 
 ## Licence
