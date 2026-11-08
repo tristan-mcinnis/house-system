@@ -43,8 +43,8 @@ model, a cloud host or a device. [Capabilities](capabilities.md) names every out
 privacy claims stay checkable.
 
 **Organ** — a shared local capability with an owning repository: the design
-system, the local model service, the voice service, the screen-context collector,
-the recall CLI, the shared chat core.
+system, the local model service, the recall CLI, the shared chat core. The
+voice service and the screen-context collector were retired on 2026-10-18.
 
 **Source (of truth)** — the record that owns a fact. The README has a table of
 them, each with exactly one owner.
@@ -53,10 +53,11 @@ them, each with exactly one owner.
 direction, and the daily context handed to an agent. It lives outside this
 repository and is never mirrored here. See [personal-context](personal-context.md).
 
-**Atlas** — `house/atlas.yaml`, the hand-edited project and relationship map
-for the house group. The code atlas generator renders it into the code
-directory's `CLAUDE.md` and the vault code index. Those rendered views are
-disposable output.
+**Atlas** — `house/atlas.yaml`, the hand-edited relationship map that owns the
+project-to-project graph and each child repository's role. The code atlas above
+it owns portfolio purpose, tier and activity, and its generator renders the map
+into the code directory's `CLAUDE.md` and the vault code index. Those rendered
+views are disposable output.
 
 **Status** — `current`, `experimental` or `aspirational`. A statement of
 maturity, not quality and not release.
@@ -64,13 +65,9 @@ maturity, not quality and not release.
 **Visibility** — `public` or `private`, describing current exposure. All House
 records are private today. `public_candidate: true` states an intention only.
 
-**Atlas** — `house/atlas.yaml`, the local relationship map that owns the
-project-to-project graph and each child repository's role. The code atlas above
-it owns portfolio purpose, tier and activity.
-
 **Organ vs surface** — an organ is used; a surface is met. Quick Launch is a
-surface; `local-models` is an organ. RTI's shared chat core is a library organ
-owned by Quick Launch.
+surface; `local-models` is an organ. The shared chat core is a library organ
+owned by `house-chat-core` and built by Quick Launch and RTI.
 
 **Face** — a surface whose job is to show and steer an organ it does not own.
 The Local Models menu bar is the face of the

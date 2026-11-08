@@ -78,12 +78,12 @@ organ on the machine.
   RTI's hosted transcription and assistant, Quick Launch's hosted providers,
   Usage's quota reads, and the hosted models every Pi call reaches. Several are
   read-only by construction (personal mail, personal Google documents, Usage),
-  two are draft-only (work mail, Slack), and a few stay on the machine (the
-  local model daemon, the voice service).
+  two are draft-only (work mail, Slack), and one stays on the machine (the
+  local model daemon).
 - Organs are shared local capabilities with an owning repository: the design
-  system, the local model service, the voice service, the screen-context
-  collector, the recall CLI, and the shared chat core owned by Quick
-  Launch and consumed by RTI.
+  system, the local model service, the recall CLI, and the shared chat core
+  owned by `house-chat-core` and built by Quick Launch and RTI. The voice
+  service and the screen-context collector were retired on 2026-10-18.
 
 A capability has one owner. A second consumer references the organ; it does not
 fork it. When two apps genuinely need different behaviour, that is a signal the
