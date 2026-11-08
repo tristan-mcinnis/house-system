@@ -45,8 +45,8 @@ honest about what it does:
 
 ## The stance
 
-**Local first.** Dictation, completion, vision, speech and memory run on the
-machine by default. A hosted service is a deliberate exception, named as such
+**Local first.** Dictation, completion, vision and memory run on the machine
+by default. A hosted service is a deliberate exception, named as such
 in [capabilities](capabilities.md), never the quiet default. The largest exceptions
 today: RTI's live meeting transcription goes to hosted Soniox and its assistant
 to a hosted LLM, and every Pi agent calls a hosted model.

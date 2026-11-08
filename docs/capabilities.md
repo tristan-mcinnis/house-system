@@ -30,8 +30,8 @@ relied on, `aspirational` is designed but not built.
   fallback.
 - **Vision** (`current`): local image analysis, OCR and schema-validated JSON
   for screenshots and documents.
-- **Speech** (`current`): an always-on localhost voice service synthesizes audio
-  from text for reading and for audiobook assembly.
+- **Speech** (`retired` 2026-10-18): the localhost voice service (`local-tts`)
+  was sunset unused. House synthesizes no audio today.
 
 ## Memory
 

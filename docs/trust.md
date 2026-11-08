@@ -6,9 +6,8 @@ decisions are reserved to a human.
 
 ## Trust boundaries
 
-**On the machine.** Inference, transcription, speech, screen capture and memory
-are local by default. The local model service and the voice service are the
-shared serving layer. A hosted service is a named exception, visible in
+**On the machine.** Inference, transcription, screen capture and memory are
+local by default. The local model service is the shared serving layer. A hosted service is a named exception, visible in
 [capabilities](capabilities.md), never the quiet default.
 
 **At the edge.** Every outbound lane is named and classified:
@@ -17,7 +16,7 @@ shared serving layer. A hosted service is a named exception, visible in
   cannot send without an explicit instruction.
 - Read-only by construction: personal mail, personal Google documents and file
   metadata. These lanes have no write path at all.
-- Local: the model daemon, the voice service, the browser and phone agents, all
+- Local: the model daemon, the browser and phone agents, all
   against resources the person already controls.
 - Hosted by request: search, transcription, social data. Used for a task, not as
   a background sync.
